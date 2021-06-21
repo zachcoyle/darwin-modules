@@ -1,4 +1,5 @@
 { config, lib, pkgs, ... }:
+with lib;
 let
   cfg = config.system.defaults.NSGlobalDomain;
 
