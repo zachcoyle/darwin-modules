@@ -25,6 +25,7 @@ in
     programs.mas.package = mkOption {
       internal = true;
       type = types.package;
+      default = pkgs.mas;
     };
   };
 
