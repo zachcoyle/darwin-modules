@@ -31,7 +31,7 @@ in
 
   config = mkIf cfg.enable {
     environment.systemPackages = [ cfg.package ];
-    system.activationScripts.mas.text = ''
+    system.activationScripts.extraUserActivation.text = ''
       echo "setting up App Store applications..."
       ${cfg.package}/bin/mas install ${lib.concatStringsSep " " cfg.applications}
     '';
