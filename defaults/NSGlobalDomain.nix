@@ -1,5 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
+
 with lib;
+
 let
   cfg = config.system.defaults.NSGlobalDomain;
 
@@ -63,33 +65,35 @@ let
 
 in
 {
+  options = {
 
-  system.defaults.NSGlobalDomain.AppleAccentColor = mkOption {
-    type = types.coercedTo
-      (types.nullOr (types.enum (builtins.attrNames appleSystemColors)))
-      coerceAppleAccentColor
-      (types.nullOr types.int);
-    default = null;
-    description = ''
-      Configures the color of native controls.
-      Catalina: The default is Blue
-      Big Sur: The default is multicolor
-    '';
-  };
+    system.defaults.NSGlobalDomain.AppleAccentColor = mkOption {
+      type = types.coercedTo
+        (types.nullOr (types.enum (builtins.attrNames appleSystemColors)))
+        coerceAppleAccentColor
+        (types.nullOr types.int);
+      default = null;
+      description = ''
+        Configures the color of native controls.
+        Catalina: The default is Blue
+        Big Sur: The default is multicolor
+      '';
+    };
 
-  system.defaults.NSGlobalDomain.AppleHighlightColor = mkOption {
-    type = types.coercedTo
-      (types.nullOr rgbDecimal)
-      coerceAppleHighlightColor
-      (types.nullOr types.string);
-    default = null;
-    description = ''
-      Configures the highlight color for text, files, etc.
-      Catalina: The default is Blue
-      Big Sur: The default is multicolor
+    system.defaults.NSGlobalDomain.AppleHighlightColor = mkOption {
+      type = types.coercedTo
+        (types.nullOr rgbDecimal)
+        coerceAppleHighlightColor
+        (types.nullOr types.string);
+      default = null;
+      description = ''
+        Configures the highlight color for text, files, etc.
+        Catalina: The default is Blue
+        Big Sur: The default is multicolor
          
-      If left unset, AppleHighlightColor will match AppleAccentColor
-    '';
+        If left unset, AppleHighlightColor will match AppleAccentColor
+      '';
 
+    };
   };
 }
