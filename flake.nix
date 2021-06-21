@@ -10,6 +10,7 @@
     darwinModule = { ... }: {
       imports = [
         ./services/mongodb
+        ./programs/mas
       ];
     };
 
