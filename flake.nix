@@ -10,6 +10,7 @@
     darwinModule = { ... }: {
       imports = [
         ./defaults/NSGlobalDomain.nix
+        ./defaults/wallpaper.nix
         ./programs/mas
         ./services/mongodb
       ];
