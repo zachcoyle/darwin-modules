@@ -18,6 +18,7 @@ in
     system.activationScripts.extraUserActivation.text = ''
       echo "setting wallpaper..."
       sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db "update data set value = '${cfg.file}'";
+      killall Dock
     '';
   };
 
