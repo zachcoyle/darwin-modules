@@ -14,7 +14,7 @@ in
     };
   };
 
-  config = mkIf cfg.file != null {
+  config = mkIf (cfg.file != null) {
     system.activationScripts.extraUserActivation.text = ''
       echo "setting wallpaper..."
       sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db "update data set value = '${cfg.file}'";
