@@ -1,10 +1,12 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-let
-  cfg = config.programs.mas;
-in
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  cfg = config.programs.mas;
+in {
   options = {
     programs.mas.enable = mkOption {
       type = types.bool;
@@ -14,8 +16,9 @@ in
 
     programs.mas.applications = mkOption {
       type = types.listOf types.string;
-      default = [ ];
-      example = literalExample
+      default = [];
+      example =
+        literalExample
         ''
           [ "497799835" /* Xcode */ ]
         '';
@@ -30,11 +33,10 @@ in
   };
 
   config = mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [cfg.package];
     system.activationScripts.extraUserActivation.text = ''
       echo "setting up App Store applications..."
       ${cfg.package}/bin/mas install ${lib.concatStringsSep " " cfg.applications}
     '';
-
   };
 }

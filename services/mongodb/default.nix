@@ -1,24 +1,23 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.services.mongodb;
 
-  mongoCnf = cfg:
-    ''
-      net.bindIp: ${cfg.bind_ip}
-      ${optionalString cfg.quiet "systemLog.quiet: true"}
-      systemLog.destination: syslog
-      storage.dbPath: ${cfg.dbpath}
-      ${optionalString cfg.enableAuth "security.authorization: enabled"}
-      ${optionalString (cfg.replSetName != "") "replication.replSetName: ${cfg.replSetName}"}
-      ${cfg.extraConfig}
-    '';
-in
-{
+  mongoCnf = cfg: ''
+    net.bindIp: ${cfg.bind_ip}
+    ${optionalString cfg.quiet "systemLog.quiet: true"}
+    systemLog.destination: syslog
+    storage.dbPath: ${cfg.dbpath}
+    ${optionalString cfg.enableAuth "security.authorization: enabled"}
+    ${optionalString (cfg.replSetName != "") "replication.replSetName: ${cfg.replSetName}"}
+    ${cfg.extraConfig}
+  '';
+in {
   options.services.mongodb = {
-
     enable = mkOption {
       type = types.bool;
       default = false;
@@ -32,13 +31,11 @@ in
       description = "This option specifies the mongodb package to use";
     };
 
-
     bind_ip = mkOption {
       type = types.str;
       default = "127.0.0.1";
       description = "IP to bind to";
     };
-
 
     quiet = mkOption {
       type = types.bool;
@@ -87,8 +84,7 @@ in
   };
 
   config = mkIf cfg.enable {
-
-    environment.systemPackages = [ cfg.package ];
+    environment.systemPackages = [cfg.package];
 
     launchd.user.agents.mongodb = {
       command = "${cfg.package}/bin/mongod -f /etc/mongod.conf";
@@ -96,6 +92,5 @@ in
     };
 
     environment.etc."mongod.conf".text = mongoCnf cfg;
-
   };
 }
