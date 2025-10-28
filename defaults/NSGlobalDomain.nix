@@ -5,7 +5,13 @@ with lib;
 let
   cfg = config.system.defaults.NSGlobalDomain;
 
-  isRgbDecimal = x: all (a: hasAttr a x && 0 <= getAttr a x && getAttr a x <= 1) [ "Red" "Green" "Blue" ];
+  isRgbDecimal =
+    x:
+    all (a: hasAttr a x && 0 <= getAttr a x && getAttr a x <= 1) [
+      "Red"
+      "Green"
+      "Blue"
+    ];
 
   rgbDecimal = mkOptionType {
     name = "rgbDecimal";
@@ -49,29 +55,33 @@ let
     };
   };
 
-  coerceAppleAccentColor = x:
-    if x == null
-    then null
-    else attrByPath [ x "accent" ] null appleSystemColors;
-
-  coerceAppleHighlightColor = x:
+  coerceAppleAccentColor =
+    x:
     if x == null then
-      (attrByPath
-        [ (toString cfg.AppleAccentColor) ]
-        null
-        ((mapAttrs' (name: value: nameValuePair (toString value.accent) value.highlight))
-          appleSystemColors))
-    else with builtins; "${toString x.Red} ${toString x.Green} ${toString x.Blue} Other";
+      null
+    else
+      attrByPath [
+        x
+        "accent"
+      ] null appleSystemColors;
+
+  coerceAppleHighlightColor =
+    x:
+    if x == null then
+      (attrByPath [ (toString cfg.AppleAccentColor) ] null (
+        (mapAttrs' (name: value: nameValuePair (toString value.accent) value.highlight)) appleSystemColors
+      ))
+    else
+      with builtins; "${toString x.Red} ${toString x.Green} ${toString x.Blue} Other";
 
 in
 {
   options = {
 
     system.defaults.NSGlobalDomain.AppleAccentColor = mkOption {
-      type = types.coercedTo
-        (types.nullOr (types.enum (builtins.attrNames appleSystemColors)))
-        coerceAppleAccentColor
-        (types.nullOr types.int);
+      type = types.coercedTo (types.nullOr (
+        types.enum (builtins.attrNames appleSystemColors)
+      )) coerceAppleAccentColor (types.nullOr types.int);
       default = null;
       description = ''
         Configures the color of native controls.
@@ -80,20 +90,20 @@ in
       '';
     };
 
-    system.defaults.NSGlobalDomain.AppleHighlightColor = mkOption {
-      type = types.coercedTo
-        (types.nullOr rgbDecimal)
-        coerceAppleHighlightColor
-        (types.nullOr types.string);
-      default = null;
-      description = ''
-        Configures the highlight color for text, files, etc.
-        Catalina: The default is Blue
-        Big Sur: The default is multicolor
-         
-        If left unset, AppleHighlightColor will match AppleAccentColor
-      '';
-
-    };
+    # system.defaults.NSGlobalDomain.AppleHighlightColor = mkOption {
+    #   type = types.coercedTo
+    #     (types.nullOr rgbDecimal)
+    #     coerceAppleHighlightColor
+    #     (types.nullOr types.string);
+    #   default = null;
+    #   description = ''
+    #     Configures the highlight color for text, files, etc.
+    #     Catalina: The default is Blue
+    #     Big Sur: The default is multicolor
+    #      
+    #     If left unset, AppleHighlightColor will match AppleAccentColor
+    #   '';
+    #
+    # };
   };
 }
